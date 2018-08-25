@@ -8,9 +8,6 @@ function CaesarCipher.EncryptSingleChar (plainChar, key)
 	local char1 = plainChar
 	local char2 = char1
 
-	--print(char1)
-	--print(char1:byte())
-
 	-- case1: lowercase
 	if (char1:byte() >= 97) and (char1:byte() <= 122) then
 
@@ -29,12 +26,9 @@ function CaesarCipher.EncryptSingleChar (plainChar, key)
 			char2 = string.char(char1:byte() + key)
 		end
 
-	else -- inalterado
+	else -- does nothing
 		--print("char1 is NOT an alphabetic character!")
 	end
-
-	--print(char2)
-	--print(char2:byte())
 
 	return char2
 end
@@ -47,11 +41,9 @@ function CaesarCipher.EncryptStr (plainStr, key)
 	local str2 = ""
 
 	for i in str1:gmatch(".") do
-		--print(i)
 		str2 = str2 .. CaesarCipher.EncryptSingleChar(i, key)
 	end
 
-	--print(str2)
 	return str2
 end
 
@@ -66,11 +58,9 @@ function CaesarCipher.EncryptFile (plainFileName, key)
 	local cipherFile = assert(io.open(cipherFileName, "w"))
 
 	for l in plainFile:lines() do
-		--print(l)
 		local cipherStr = ""
 
 		for i in l:gmatch(".") do
-			--print(i)
 			cipherStr = cipherStr .. CaesarCipher.EncryptSingleChar(i, key)
 		end
 
@@ -91,7 +81,7 @@ function CaesarCipher.DecryptSingleCharWithKey (cipherChar, key)
 	local char1 = cipherChar
 	local char2 = char1
 
-	-- caso1: letra minuscula
+	-- case1: lowercase
 	if (char1:byte() >= 97) and (char1:byte() <= 122) then
 
 		if char1:byte() - key < 97 then
@@ -100,7 +90,7 @@ function CaesarCipher.DecryptSingleCharWithKey (cipherChar, key)
 			char2 = string.char(char1:byte() - key)
 		end
 
-	-- caso2: letra maiuscula
+	-- case2: uppercase
 	elseif (char1:byte() >= 65) and (char1:byte() <= 90) then
 
 		if char1:byte() - key < 65 then
@@ -109,8 +99,8 @@ function CaesarCipher.DecryptSingleCharWithKey (cipherChar, key)
 			char2 = string.char(char1:byte() - key)
 		end
 
-	else -- inalterado
-		--print("char1 NAO eh letra do alfabeto!")
+	else -- does nothing
+		--print("char1 is NOT an alphabetic character!")
 	end
 
 	return char2
@@ -119,21 +109,17 @@ end
 -------------------
 
 -- decrypts a string
--- key is known
+-- key is previously known
 function CaesarCipher.DecryptStrWithKey (cipherStr, key)
 	local str1 = cipherStr
 	local str2 = ""
 
 	for i in str1:gmatch(".") do
-		--print(i)
 		str2 = str2 .. CaesarCipher.DecryptSingleCharWithKey(i, key)
 	end
 
-	--print(str2)
 	return str2
 end
-
---print(CaesarDecryptStrWithKey(str2, 3))
 
 -------------------
 
@@ -145,19 +131,14 @@ function CaesarCipher.DecryptStrWithoutKey (cipherStr)
 
 	for key = 1, 25 do
 		for i in str1:gmatch(".") do
-			--print(i)
 			str2 = str2 .. CaesarCipher.DecryptSingleCharWithKey(i, key)
 		end
 
-		--print(str2)
-		--print("key")
 		print(key)
 		print(str2)
 		str2 = ""
 	end
 end
-
---print(CaesarDecryptStrWithoutKey(str2, 3))
 
 -------------------
 
@@ -171,11 +152,9 @@ function CaesarCipher.DecryptFileWithKey (cipherFileName, key)
 	local plainFile = assert(io.open(plainFileName, "w"))
 
 	for l in cipherFile:lines() do
-		--print(l)
 		local plainStr = ""
 
 		for i in l:gmatch(".") do
-			--print(i)
 			plainStr = plainStr .. CaesarCipher.DecryptSingleCharWithKey(i, key)
 		end
 
@@ -205,11 +184,9 @@ function CaesarCipher.DecryptFileWithoutKey (cipherFileName)
 		plainFile:write("\n\n")
 
 		for l in cipherFile:lines() do
-			--print(l)
 			local plainStr = ""
 
 			for i in l:gmatch(".") do
-				--print(i)
 				plainStr = plainStr .. CaesarCipher.DecryptSingleCharWithKey(i, key)
 			end
 
